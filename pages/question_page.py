@@ -1,28 +1,28 @@
 import allure
+from pages.base_pages import BasePage
 from locators.important_questions_locators import QuestionPageLocators
 
-class QuestionPage:
-    def __init__(self, driver):
-        self.driver=driver
+class QuestionPage(BasePage):
 
-    @allure.description('Проверяем, что главная страница открыта')
+    @allure.step('Проверяем, что главная страница открыта')
     def check_open_page(self):
-        return self.driver.current_url
+        return self.get_current_url()
     
     @allure.step('Скролим до раздела Вопросы о важном')
     def scroll_to_important(self):
-        element=self.driver.find_element(*QuestionPageLocators.IMPORTANT_BLOCK)
-        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+        self.scroll_to_element(QuestionPageLocators.IMPORTANT_BLOCK)
 
-    @allure.step('Ищем вопрос {question_locator} и раскрываем')
+    @allure.step('Кликаем на вопрос')
     def find_question(self, question_locator):
-        self.driver.find_element(*question_locator).click()
+        self.click_element(question_locator)
 
-    @allure.step('Получаем текст ответа {answer_locator}')
+    @allure.step('Получаем текст ответа')
     def get_text(self, answer_locator):
-        return self.driver.find_element(*answer_locator).text
-    
-    @allure.step('Принимаем куки')
-    def accept_cookies(self):
-        if self.driver.find_element(*QuestionPageLocators.COOKIE_BUTTON):
-            self.driver.find_element(*QuestionPageLocators.COOKIE_BUTTON).click()
+        element = self.wait_for_visibility(answer_locator)
+        return element.text
+
+    @allure.step('Получаем ответ на выбранный вопрос')
+    def get_faq_answer(self, question_locator, answer_locator):
+        self.scroll_to_important()
+        self.click_question(question_locator)
+        return self.get_answer_text(answer_locator)

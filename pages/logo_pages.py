@@ -1,24 +1,26 @@
 import allure
 from locators.logo_locators import LogoLocators
+from pages.base_pages import BasePage
 from selenium.webdriver.support import expected_conditions as EC
 
-class LogoPages:
-    def __init__(self, driver, wait):
-        self.driver=driver
-        self.wait = wait
-
-    @allure.description('Проверяем, что главная страница открыта')
-    def check_open_page(self):
-        return self.driver.current_url
+class LogoPages(BasePage):
     
-    @allure.step('Переходим на страницу заказа')
+    @allure.step('Проверяем текущий URL')
+    def check_open_page(self):
+        return self.get_current_url()
+
+    @allure.step('Переходим на страницу заказа через кнопку в хедере')
     def push_order_button(self):
-        self.wait.until(EC.element_to_be_clickable(LogoLocators.HEADER_ORDER_BUTTON)).click()
+        self.click_element(LogoLocators.HEADER_ORDER_BUTTON)
     
     @allure.step('Кликаем на логотип Самокат')
     def click_logo_scooter(self):
-        self.driver.find_element(*LogoLocators.LOGO_SCOOTER).click()
+        self.click_element(LogoLocators.LOGO_SCOOTER)
 
     @allure.step('Кликаем на логотип Яндекс')
     def click_logo_yandex(self):
-        self.driver.find_element(*LogoLocators.LOGO_YANDEX).click()
+        self.click_element(LogoLocators.LOGO_YANDEX)
+
+    @allure.step('Переключаемся на новую вкладку и ждем URL')
+    def switch_to_new_tab_and_wait_url(self, expected_url_part):
+        self.wait.until(EC.url_contains(expected_url_part))

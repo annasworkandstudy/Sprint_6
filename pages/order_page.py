@@ -1,89 +1,81 @@
 import allure
-from selenium.webdriver.support import expected_conditions as EC
-from locators.order_locators import OrderButtonLocators
 from selenium.webdriver.common.keys import Keys
+from pages.base_pages import BasePage
+from locators.order_locators import OrderButtonLocators
 
-class OrderPage:
-    def __init__(self, driver, wait):
-        self.driver=driver
-        self.wait=wait
-    
-    @allure.description('Проверяем, что главная страница открыта')
+class OrderPage(BasePage):
+
+    @allure.step('Проверяем текущий URL')
     def check_open_page(self):
-        return self.driver.current_url
+        return self.get_current_url()
     
     @allure.step('Клик по кнопке Заказать')
     def push_order_button(self, locator_order_button):
         if locator_order_button == OrderButtonLocators.FOOTER_ORDER_BUTTON:
-            element = self.wait.until(EC.presence_of_element_located(locator_order_button))
-            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        self.wait.until(EC.element_to_be_clickable(locator_order_button)).click()
+            self.scroll_to_element(locator_order_button)
+        self.click_element(locator_order_button)
 
     @allure.step('Заполнение поля Имя')
     def set_input_name(self, name):
-        self.driver.find_element(*OrderButtonLocators.INPUT_NAME).send_keys(name)
+        self.set_text(OrderButtonLocators.INPUT_NAME, name)
     
     @allure.step('Заполнение поля Фамилия')
     def set_input_surname(self, surname):
-        self.driver.find_element(*OrderButtonLocators.INPUT_SURNAME).send_keys(surname)
+        self.set_text(OrderButtonLocators.INPUT_SURNAME, surname)
 
     @allure.step('Заполнение поля Адрес')
     def set_input_adress(self, address):
-        self.driver.find_element(*OrderButtonLocators.INPUT_ADRESS).send_keys(address)
+        self.set_text(OrderButtonLocators.INPUT_ADRESS, address)
 
     @allure.step('Заполнение поля Станция метро')
     def set_input_undeground(self):
-        input_field = self.driver.find_element(*OrderButtonLocators.INPUT_UNDEGROUND)
-        input_field.send_keys('Черкизовская')
-        input_field.send_keys(Keys.DOWN, Keys.ENTER)
+        element = self.find_element(OrderButtonLocators.INPUT_UNDEGROUND)
+        element.send_keys('Черкизовская')
+        element.send_keys(Keys.DOWN, Keys.ENTER)
 
     @allure.step('Заполнение поля Телефон')
     def set_input_telephone(self, phone):
-        self.driver.find_element(*OrderButtonLocators.INPUT_PHONE).send_keys(phone)
+        self.set_text(OrderButtonLocators.INPUT_PHONE, phone)
 
     @allure.step('Переход на форму Про аренду')
     def click_next(self):
-        self.driver.find_element(*OrderButtonLocators.NEXT_BUTTON).click()
+        self.click_element(OrderButtonLocators.NEXT_BUTTON)
 
     @allure.step('Заполнение поля Когда привезти самокат')
     def set_input_bring(self, date):
-        field = self.driver.find_element(*OrderButtonLocators.INPUT_BRING)
-        field.send_keys(date)
-        field.send_keys(Keys.ENTER)
+        element = self.find_element(OrderButtonLocators.INPUT_BRING)
+        element.send_keys(date)
+        element.send_keys(Keys.ENTER)
 
     @allure.step('Заполнение поля Срок аренды')
     def set_input_rent(self):
-        self.driver.find_element(*OrderButtonLocators.INPUT_RENT).click()
-        self.wait.until(EC.element_to_be_clickable(OrderButtonLocators.CHOOSE_RENTAL_PERIOD)).click()
+        self.click_element(OrderButtonLocators.INPUT_RENT)
+        self.click_element(OrderButtonLocators.CHOOSE_RENTAL_PERIOD)
 
-    @allure.step('Выбор цвета самоката - чёрный жемчуг')
+    @allure.step('Выбор цвета самоката')
     def choose_colour(self):
-        self.driver.find_element(*OrderButtonLocators.CHOOSE_COLOUR_BLACK).click()
+        self.click_element(OrderButtonLocators.CHOOSE_COLOUR_BLACK)
 
     @allure.step('Заполнение комментария')
     def set_input_comment(self, comment):
-        self.driver.find_element(*OrderButtonLocators.COMMENT).send_keys(comment)
+        self.set_text(OrderButtonLocators.COMMENT, comment)
     
     @allure.step('Подтверждение заказа')
     def confirm(self):
-        self.driver.find_element(*OrderButtonLocators.BUTTON_ORDER_IN_FORM).click()
+        self.click_element(OrderButtonLocators.BUTTON_ORDER_IN_FORM)
 
-    @allure.step('Нажимаем на кнопку Да. Ожидаем появления окна с сообщением об удачном оформлении заказа')
+    @allure.step('Ожидаем появления окна с сообщением об успехе')
     def wait_message_success_order(self):
-        self.driver.find_element(*OrderButtonLocators.CONFIRMATION_ORDER).click()
-        self.wait.until(EC.visibility_of_element_located(OrderButtonLocators.SUCCESSFUL_ORDER))
+        self.click_element(OrderButtonLocators.CONFIRMATION_ORDER)
+        return self.wait_for_visibility(OrderButtonLocators.SUCCESSFUL_ORDER).text
 
-    @allure.step('Кликаем по кнопке Посмотреть статус')
-    def click_button_look_status(self):
-        self.driver.find_element(*OrderButtonLocators.BUTTON_LOOK_STATUS).click()
-
-    @allure.step('Кликаем на логотип Самокат в левом верхнем углу')
+    @allure.step('Кликаем на логотип Самокат')
     def click_logo_scooter(self):
-        self.driver.find_element(*OrderButtonLocators.LOGO_SCOOTER).click()
+        self.click_element(OrderButtonLocators.LOGO_SCOOTER)
 
-    @allure.step('Кликаем на логотип Яндекс в левом верхнем углу')
+    @allure.step('Кликаем на логотип Яндекс')
     def click_logo_yandex(self):
-        self.driver.find_element(*OrderButtonLocators.LOGO_YANDEX).click()
+        self.click_element(OrderButtonLocators.LOGO_YANDEX)
 
     @allure.step('Заполняем поля формы заказа')
     def set_order_form(self, data):
@@ -94,24 +86,11 @@ class OrderPage:
         self.set_input_undeground()
         self.set_input_telephone(telephone)
         self.click_next()
-        self.wait.until(EC.visibility_of_element_located(OrderButtonLocators.INPUT_BRING))
+        self.wait_for_visibility(OrderButtonLocators.INPUT_BRING)
         self.set_input_bring(date)
         self.set_input_rent()
         self.choose_colour()
         self.set_input_comment(comment)
         self.confirm()
-        self.wait_message_success_order()
-    
-    
-    
-    
-
-    
-
-    
-
-
-    
-
-    
+        return self.wait_message_success_order()
     
