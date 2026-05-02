@@ -53,8 +53,8 @@ class OrderPage(BasePage):
         self.click_element(OrderButtonLocators.CHOOSE_RENTAL_PERIOD)
 
     @allure.step('Выбор цвета самоката')
-    def choose_colour(self):
-        self.click_element(OrderButtonLocators.CHOOSE_COLOUR_BLACK)
+    def choose_colour(self, colour_scooter):
+        self.click_element(colour_scooter)
 
     @allure.step('Заполнение комментария')
     def set_input_comment(self, comment):
@@ -78,7 +78,7 @@ class OrderPage(BasePage):
         self.click_element(OrderButtonLocators.LOGO_YANDEX)
 
     @allure.step('Заполняем поля формы заказа')
-    def set_order_form(self, data):
+    def set_order_form(self, data, colour_scooter):
         name, surname, address, telephone, date, comment = data
         self.set_input_name(name)
         self.set_input_surname(surname)
@@ -89,7 +89,7 @@ class OrderPage(BasePage):
         self.wait_for_visibility(OrderButtonLocators.INPUT_BRING)
         self.set_input_bring(date)
         self.set_input_rent()
-        self.choose_colour()
+        self.choose_colour(colour_scooter)
         self.set_input_comment(comment)
         self.confirm()
         return self.wait_message_success_order()

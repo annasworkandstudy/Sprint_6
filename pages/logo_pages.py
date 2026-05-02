@@ -23,4 +23,5 @@ class LogoPages(BasePage):
 
     @allure.step('Переключаемся на новую вкладку и ждем URL')
     def switch_to_new_tab_and_wait_url(self, expected_url_part):
-        self.wait.until(EC.url_contains(expected_url_part))
+        self.switch_to_next_tab()
+        self.wait_url_contains(expected_url_part)

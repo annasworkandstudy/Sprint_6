@@ -22,7 +22,7 @@ class OrderButtonLocators:
     INPUT_BRING=(By.XPATH, './/input[@placeholder="* Когда привезти самокат"]')
     INPUT_RENT=(By.CLASS_NAME, "Dropdown-control")
     CHOOSE_COLOUR_BLACK=(By.XPATH, './/label[text()="чёрный жемчуг"]')
-    CHOOSE_GREY_BLACK=(By.XPATH, './/label[@text()="серая безысходность"]')
+    CHOOSE_GREY_COLOUR=(By.XPATH, './/label[text()="серая безысходность"]')
     COMMENT=(By.XPATH, './/input[@placeholder="Комментарий для курьера"]')
     CHOOSE_RENTAL_PERIOD=(By.XPATH, ".//div[@class='Dropdown-menu']//div[text()='двое суток']")
 
